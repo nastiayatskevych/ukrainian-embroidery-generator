@@ -71,3 +71,8 @@
     -fx-border-radius: 50;
     -fx-cursor: hand;
 }
+.welcome-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a1515;
+}

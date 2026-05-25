@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import ua.ukma.embroidery.canvas.EmbroideryCanvas;
 import ua.ukma.embroidery.service.SymmetryService;
 import ua.ukma.embroidery.service.FileService;
@@ -17,7 +18,7 @@ import javafx.scene.layout.StackPane;
 
 public class DrawingScene {
 
-    public static Scene create() {
+    public static Scene create(Stage stage) {
         BorderPane root = new BorderPane();
         root.getStyleClass().add("root-pane");
 
@@ -111,6 +112,10 @@ public class DrawingScene {
         duplicateButton.setOnAction(event ->
                 SymmetryService.duplicateFragment(embroideryCanvas)
         );
+
+        finishButton.setOnAction(event -> {
+            stage.setScene(ExitScene.create(stage, embroideryCanvas));
+        });
 
         //left panel
 
