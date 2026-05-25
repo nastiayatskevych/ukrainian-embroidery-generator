@@ -12,11 +12,13 @@ public class EmbroideryCanvas {
     private final GridPane grid;
     private final Rectangle[][] cells;
     private Color currentColor;
+    private final Color[][] pattern;
 
     public EmbroideryCanvas() {
         this.grid = new GridPane();
         this.cells = new Rectangle[EmbroideryConfig.ROWS][EmbroideryConfig.COLS];
         this.currentColor = Color.BLACK;
+        this.pattern = new Color[EmbroideryConfig.ROWS][EmbroideryConfig.COLS];
 
         createGrid();
     }
@@ -39,8 +41,13 @@ public class EmbroideryCanvas {
                 cell.setStroke(Color.LIGHTGRAY);
                 cell.getStyleClass().add("grid-cell");
 
+                pattern[row][col] = Color.WHITE;
+
+                final int currentRow = row;
+                final int currentCol = col;
+
                 cell.setOnMouseClicked(event -> {
-                    cell.setFill(currentColor);
+                    setCellColor(currentRow, currentCol, currentColor);
                 });
 
                 cells[row][col] = cell;
@@ -64,11 +71,19 @@ public class EmbroideryCanvas {
     public void useEraser() {
         this.currentColor = Color.WHITE;
     }
+    public Color[][] getPattern() {
+        return pattern;
+    }
+
+    public void setCellColor(int row, int col, Color color) {
+        cells[row][col].setFill(color);
+        pattern[row][col] = color;
+    }
 
     public void clear() {
         for (int row = 0; row < cells.length; row++) {
             for (int col = 0; col < cells[row].length; col++) {
-                cells[row][col].setFill(Color.WHITE);
+                setCellColor(row, col, Color.WHITE);
             }
         }
     }

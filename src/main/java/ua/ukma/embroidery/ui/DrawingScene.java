@@ -6,15 +6,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import ua.ukma.embroidery.canvas.EmbroideryCanvas;
 import ua.ukma.embroidery.service.SymmetryService;
 import ua.ukma.embroidery.service.FileService;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class DrawingScene {
 
@@ -23,6 +22,19 @@ public class DrawingScene {
         root.getStyleClass().add("root-pane");
 
         EmbroideryCanvas embroideryCanvas = new EmbroideryCanvas();
+
+        StackPane centerPane = new StackPane();
+
+        ImageView openedImageView = new ImageView();
+        openedImageView.fitWidthProperty().bind(centerPane.widthProperty());
+        openedImageView.fitHeightProperty().bind(centerPane.heightProperty());
+        openedImageView.setPreserveRatio(true);
+        openedImageView.setMouseTransparent(true);
+
+        centerPane.getChildren().addAll(
+                embroideryCanvas.getGrid(),
+                openedImageView
+        );
 
         HBox palette = createPalette(embroideryCanvas);
 
@@ -62,6 +74,10 @@ public class DrawingScene {
 
 
         Label paletteTitle = new Label("Палітра");
+        VBox.setMargin(
+                palette,
+                new Insets(10, 0, 0, 0)
+        );
         paletteTitle.getStyleClass().add("panel-title");
 
         eraserButton.setOnAction(event -> embroideryCanvas.useEraser());
@@ -82,13 +98,23 @@ public class DrawingScene {
             );
         });
 
+        openButton.setOnAction(event -> {
+            FileService.openImage(
+                    openedImageView,
+                    root.getScene().getWindow()
+            );
+        });
+
         //left panel
-        leftPanel.getChildren().addAll(eraserButton, clearAllButton,  paletteTitle, palette);
+
+        leftPanel.getChildren().addAll( toolsTitle, eraserButton, clearAllButton, paletteTitle, palette);
         leftPanel.setSpacing(20);
         leftPanel.setPadding(new Insets(120, 20, 20, 20));
         leftPanel.setPrefWidth(240);
         leftPanel.setAlignment(Pos.TOP_CENTER);
         leftPanel.getStyleClass().add("side-panel");
+
+
 
         //right panel
         rightPanel.getChildren().addAll(openButton, saveButton);
@@ -114,7 +140,7 @@ public class DrawingScene {
 
         root.setTop(topPanel);
         root.setLeft(leftPanel);
-        root.setCenter(embroideryCanvas.getGrid());
+        root.setCenter(centerPane);
         root.setRight(rightPanel);
         root.setBottom(bottomPanel);
 
