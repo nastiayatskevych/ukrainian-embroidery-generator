@@ -1,5 +1,5 @@
 package ua.ukma.embroidery;
-
+//mvn javafx:run
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
