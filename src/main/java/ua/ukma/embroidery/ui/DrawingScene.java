@@ -50,6 +50,7 @@ public class DrawingScene {
         //top
         Button horizontalButton = new Button("Горизонтально");
         Button verticalButton = new Button("Вертикально");
+        Button duplicateButton = new Button("Дублювати");
 
         //right
         Button openButton = new Button("Відкрити");
@@ -65,6 +66,7 @@ public class DrawingScene {
         setButtonSize(verticalButton);
         setButtonSize(openButton);
         setButtonSize(saveButton);
+        setButtonSize(duplicateButton);
 
         finishButton.setPrefSize(260, 55);
         finishButton.getStyleClass().add("finish-button");
@@ -105,6 +107,11 @@ public class DrawingScene {
             );
         });
 
+
+        duplicateButton.setOnAction(event ->
+                SymmetryService.duplicateFragment(embroideryCanvas)
+        );
+
         //left panel
 
         leftPanel.getChildren().addAll( toolsTitle, eraserButton, clearAllButton, paletteTitle, palette);
@@ -126,7 +133,7 @@ public class DrawingScene {
 
 
         // top panel
-        topPanel.getChildren().addAll(horizontalButton, verticalButton);
+        topPanel.getChildren().addAll(horizontalButton, verticalButton, duplicateButton);
         topPanel.setSpacing(20);
         topPanel.setPadding(new Insets(20));
         topPanel.setAlignment(Pos.CENTER);
