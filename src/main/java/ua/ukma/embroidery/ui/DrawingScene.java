@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -11,19 +12,24 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import ua.ukma.embroidery.canvas.EmbroideryCanvas;
+import ua.ukma.embroidery.service.SymmetryService;
+import ua.ukma.embroidery.service.FileService;
 
 public class DrawingScene {
 
     public static Scene create() {
         BorderPane root = new BorderPane();
+        root.getStyleClass().add("root-pane");
+
+        EmbroideryCanvas embroideryCanvas = new EmbroideryCanvas();
+
+        HBox palette = createPalette(embroideryCanvas);
 
         VBox leftPanel = new VBox();
         VBox rightPanel = new VBox();
         HBox topPanel = new HBox();
         HBox bottomPanel = new HBox();
-
-        GridPane grid = createEmbroideryGrid();
-
 
         //left
         Button eraserButton = new Button("Гумка");
@@ -48,21 +54,49 @@ public class DrawingScene {
         setButtonSize(openButton);
         setButtonSize(saveButton);
 
-        finishButton.setPrefSize(230, 45);
+        finishButton.setPrefSize(260, 55);
+        finishButton.getStyleClass().add("finish-button");
+
+       Label toolsTitle = new Label("Інструменти");
+        toolsTitle.getStyleClass().add("panel-title");
+
+
+        Label paletteTitle = new Label("Палітра");
+        paletteTitle.getStyleClass().add("panel-title");
+
+        eraserButton.setOnAction(event -> embroideryCanvas.useEraser());
+        clearAllButton.setOnAction(event -> embroideryCanvas.clear());
+
+        horizontalButton.setOnAction(event ->
+                SymmetryService.applyHorizontalSymmetry(embroideryCanvas.getCells())
+        );
+
+        verticalButton.setOnAction(event ->
+                SymmetryService.applyVerticalSymmetry(embroideryCanvas.getCells())
+        );
+
+        saveButton.setOnAction(event -> {
+            FileService.saveNodeAsPng(
+                    embroideryCanvas.getGrid(),
+                    root.getScene().getWindow()
+            );
+        });
 
         //left panel
-        leftPanel.getChildren().addAll(eraserButton, clearAllButton);
+        leftPanel.getChildren().addAll(eraserButton, clearAllButton,  paletteTitle, palette);
         leftPanel.setSpacing(20);
         leftPanel.setPadding(new Insets(120, 20, 20, 20));
-        leftPanel.setPrefWidth(200);
+        leftPanel.setPrefWidth(240);
         leftPanel.setAlignment(Pos.TOP_CENTER);
+        leftPanel.getStyleClass().add("side-panel");
 
         //right panel
         rightPanel.getChildren().addAll(openButton, saveButton);
         rightPanel.setSpacing(20);
         rightPanel.setPadding(new Insets(120, 20, 20, 20));
-        rightPanel.setPrefWidth(200);
+        rightPanel.setPrefWidth(240);
         rightPanel.setAlignment(Pos.TOP_CENTER);
+        rightPanel.getStyleClass().add("side-panel");
 
 
         // top panel
@@ -70,48 +104,61 @@ public class DrawingScene {
         topPanel.setSpacing(20);
         topPanel.setPadding(new Insets(20));
         topPanel.setAlignment(Pos.CENTER);
+        topPanel.getStyleClass().add("top-panel");
 
 
         bottomPanel.getChildren().add(finishButton);
         bottomPanel.setPadding(new Insets(20));
         bottomPanel.setAlignment(Pos.CENTER);
+        bottomPanel.getStyleClass().add("bottom-panel");
 
         root.setTop(topPanel);
         root.setLeft(leftPanel);
-        root.setCenter(grid);
+        root.setCenter(embroideryCanvas.getGrid());
         root.setRight(rightPanel);
         root.setBottom(bottomPanel);
 
-        return new Scene(root, 1200, 800);
+        Scene scene = new Scene(root, 1200, 800);
+
+        scene.getStylesheets().add(
+                DrawingScene.class.getResource("/styles.css").toExternalForm()
+        );
+
+        return scene;
 
     }
     private static void setButtonSize(Button button) {
         button.setPrefSize(200, 60);
-    }
-    private static GridPane createEmbroideryGrid() {
-        GridPane grid = new GridPane();
-
-        int rows = 20;
-        int cols = 20;
-        int cellSize = 25;
-
-        grid.setHgap(1);
-        grid.setVgap(1);
-        grid.setPadding(new Insets(20));
-        grid.setAlignment(Pos.CENTER);
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                Rectangle cell = new Rectangle(cellSize, cellSize);
-
-                cell.setFill(Color.WHITE);
-                cell.setStroke(Color.LIGHTGRAY);
-
-                grid.add(cell, col, row);
-            }
-        }
-
-        return grid;
+        button.getStyleClass().add("menu-button");
     }
 
+    private static HBox createPalette(EmbroideryCanvas embroideryCanvas) {
+        HBox palette = new HBox();
+        palette.setSpacing(8);
+        palette.setAlignment(Pos.CENTER);
+
+        Button black = createColorButton("black", Color.BLACK, embroideryCanvas);
+        Button red = createColorButton("red", Color.RED, embroideryCanvas);
+        Button blue = createColorButton("blue", Color.BLUE, embroideryCanvas);
+        Button green = createColorButton("green", Color.GREEN, embroideryCanvas);
+        Button yellow = createColorButton("yellow", Color.YELLOW, embroideryCanvas);
+        Button white = createColorButton("white", Color.WHITE, embroideryCanvas);
+
+        palette.getChildren().addAll(black, red, blue, green, yellow, white);
+
+        return palette;
+    }
+
+    private static Button createColorButton(String cssColor, Color color, EmbroideryCanvas embroideryCanvas) {
+        Button button = new Button();
+        button.setPrefSize(28, 28);
+        button.getStyleClass().add("color-button");
+        button.setStyle("-fx-background-color: " + cssColor + ";");
+
+        button.setOnAction(event -> {
+            embroideryCanvas.setCurrentColor(color);
+        });
+
+        return button;
+    }
 }

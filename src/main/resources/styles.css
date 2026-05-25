@@ -1,0 +1,73 @@
+.root-pane {
+    -fx-background-color: #f7f1e8;
+    -fx-font-family: "Arial";
+}
+
+.side-panel {
+    -fx-background-color: #efe0d0;
+    -fx-border-color: #7a1f1f;
+    -fx-border-width: 0 1 0 1;
+}
+
+.top-panel {
+    -fx-background-color: #efe0d0;
+    -fx-border-color: #7a1f1f;
+    -fx-border-width: 0 0 1 0;
+}
+
+.bottom-panel {
+    -fx-background-color: #efe0d0;
+    -fx-border-color: #7a1f1f;
+    -fx-border-width: 1 0 0 0;
+}
+
+.panel-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a1515;
+}
+
+.menu-button {
+    -fx-background-color: #8b1e1e;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #a83232;
+}
+
+.finish-button {
+    -fx-background-color: #4a1515;
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+}
+
+.finish-button:hover {
+    -fx-background-color: #6b1d1d;
+}
+
+.embroidery-grid {
+    -fx-background-color: white;
+    -fx-border-color: #4a1515;
+    -fx-border-width: 2;
+}
+
+.grid-cell {
+    -fx-stroke: #d0d0d0;
+}
+
+.color-button {
+    -fx-background-radius: 50;
+    -fx-border-color: #4a1515;
+    -fx-border-width: 1;
+    -fx-border-radius: 50;
+    -fx-cursor: hand;
+}
